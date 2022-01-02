@@ -4,15 +4,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Random;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-/**
- *
- * @author honzik
- */
 public class Des {
 
     int[] leftShiftsNumber = new int[]{1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
@@ -26,7 +17,6 @@ public class Des {
         String result = "";
         for (int i = 0; i < length; i++) {
             int myRandomNumber = rand.nextInt(16); // Generates a random number between 0x10 and 0x20
-            //System.out.printf("%x\n", myRandomNumber); // Prints it in hex, such as "0x14"
             result += Integer.toHexString(myRandomNumber); // Random hex number in result
         }
         return result.toUpperCase();
@@ -43,9 +33,6 @@ public class Des {
     //Encrypts hex string
     public String encrypt(String message, String keyStr) {
         calculateKeys(keyStr);
-
-        System.out.println(toHex(message));
-
 
         byte[] inputBlock = hexBlockToByteArray(message);
         byte[] perInput = permutInput(DesTables.IP, inputBlock);
@@ -228,7 +215,6 @@ public class Des {
             }
             return xorArr;
         } else {
-            System.out.println("Nie mozna zXORowac tablic! Nie maja takich samych rozmiarow!");
             return null;
         }
     }
@@ -271,43 +257,8 @@ public class Des {
         return convBitsStr;
     }
 
-    //Converts input bits to String. spaceStart indicates positions for space to appear (i*spaceStart i>0)
-    private String bitsToHexString2(byte[] input, int spaceStart) {
-        int maxInteration = input.length / 4;
-        String str = "";
-        String partStr;
-
-        int nOfAddedChar = 0;
-
-        for (int i = 0; i < maxInteration; i++) {
-            int currPos = i * 4;
-            partStr = "";
-            for (int j = 0; j < 4; j++) {
-                partStr += (input[currPos]);
-                currPos++;
-            }
-
-            str += partStr;
-            nOfAddedChar++;
-
-        }
-        if (spaceStart > 0) {
-            String strWithSpace = "";
-            for (int i = 0; i < str.length() / spaceStart; i++) {
-                int startIndex = i * spaceStart;
-                int endIndex = i * spaceStart + spaceStart;
-                strWithSpace += str.substring(startIndex, endIndex);
-                strWithSpace += " ";
-            }
-            return strWithSpace;
-        } else {
-            return str;
-        }
-    }
-
     //Converts input arr of bytes to String. Every byte of given array is represented as single bit. Every char of returned string is composed from 4 bytes(bits) combination.
    private String bitsToHexString3(byte[] input) {
-        System.out.println(input);
         String hexStr = "";
 
         for (int i = 0; i < input.length / 4; i++) {
@@ -325,13 +276,6 @@ public class Des {
         return hexStr;
     }
 
-    //Logs input bytes to console. spaceStart indicates positions for space to appear (i*spaceStart i>0)
-    private void logger(String informationalMessage, byte[] input, int spacesStart) {
-        String inputString = bitsToHexString2(input, spacesStart);
-        System.out.println(informationalMessage);
-        System.out.println(inputString);
-    }
-
     //Return byte value of hex char
     private byte hexCharToByte(char hexC) {
         return staticHexCharLookup[Integer.parseInt(Character.toString(hexC), 16)];
@@ -342,66 +286,8 @@ public class Des {
         return staticBinCharLookup[i];
     }
 
-    //8 bits to byte
-    private byte[] bitsToBytes(byte[] bits) {
-        int iterationNumber = bits.length / 8;
-        byte[] bytes = new byte[iterationNumber];
-        int bytesPos = 0;
-        for (int i = 0; i < iterationNumber; i++) {
-            byte sum = 0;
-
-            int addPos = 0;
-            for (int pos = 7; pos >= 0; pos--) {
-                byte currBit = bits[i * 8 + addPos];
-                sum += getByte(currBit, pos);
-                addPos++;
-            }
-            bytes[bytesPos] = sum;
-            bytesPos++;
-        }
-
-        return bytes;
-    }
-    
-    //4 bits to byte
-    private byte[] bitsToBytes2(byte[] bits) {
-        int iterationNumber = bits.length / 4;
-        byte[] bytes = new byte[iterationNumber];
-        int bytesPos = 0;
-        for (int i = 0; i < iterationNumber; i++) {
-            byte sum = 0;
-
-            int addPos = 0;
-            for (int pos = 3; pos >= 0; pos--) {
-                byte currBit = bits[i * 4 + addPos];
-                sum += getByte(currBit, pos);
-                addPos++;
-            }
-            bytes[bytesPos] = sum;
-            bytesPos++;
-        }
-
-        return bytes;
-    }
-
     private byte getByte(byte bit, int position) {
         byte shiftedByte = (byte) (bit << position);
         return shiftedByte;
-    }
-
-    //1 bit - 4 most right bytes, ignores 4 left bytes
-    private byte[] byteToBits(byte[] byteArr) {
-        byte[] bits = new byte[byteArr.length * 4];
-        int bitsPos = 0;
-        for (int i = 0; i < byteArr.length; i++) {
-            byte currByte = byteArr[i];
-            for (int pos = 3; pos >= 0; pos--) {
-                byte bit = getBit(currByte, pos);
-                bits[bitsPos] = bit;
-                bitsPos++;
-            }
-        }
-
-        return bits;
     }
 }

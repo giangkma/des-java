@@ -7,15 +7,14 @@
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 
-public class DesSingleMessEnc extends javax.swing.JFrame {
+public class ThreeDesSingleMessEnc extends javax.swing.JFrame {
 
     Des des;
-    public DesSingleMessEnc() {
+    public ThreeDesSingleMessEnc() {
         initComponents();
         des = new Des();
     }
 
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jLabel2 = new javax.swing.JLabel();
@@ -30,7 +29,7 @@ public class DesSingleMessEnc extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         decryptedTextField1 = new javax.swing.JTextField();
 
-        setTitle("DES Encryption");
+        setTitle("3DES Encryption");
 
         jLabel2.setText("Message");
         jLabel2.setToolTipText("");
@@ -127,7 +126,7 @@ public class DesSingleMessEnc extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
     private void genKeyButtonActionPerformed(java.awt.event.ActionEvent evt) {
         String generatedKey = des.generateKey(16); // Key 16 chars long = 64 bits
@@ -138,23 +137,31 @@ public class DesSingleMessEnc extends javax.swing.JFrame {
         return String.format("%040x", new BigInteger(1, arg.getBytes(StandardCharsets.UTF_8)));
     }
     private void encryptButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
         String message = messageTextField.getText();
         message = message.toUpperCase();
         String key = keyTextField.getText();
         key = key.toUpperCase();
         String encryptedMessage = des.encrypt(message,key);
-        encryptedMessageTextField1.setText(encryptedMessage);
+        String key2 = "75536BB8722AAFDD";
+        String desMessage = des.decrypt(encryptedMessage, key2);
+        String key3 = "15C7B0CFBB54E567";
+        String result = des.encrypt(desMessage, key3);
+        encryptedMessageTextField1.setText(result);
     }
 
     private void decyptionJButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        String key2 = "75536BB8722AAFDD";
+        String key3 = "15C7B0CFBB54E567";
         String encMessage = encryptedMessageTextField1.getText();
         encMessage = encMessage.toUpperCase();
         String key = keyTextField.getText();
         key = key.toUpperCase();
         String decryptedMessage = des.decrypt(encMessage,key);
-        decryptedTextField1.setText(decryptedMessage);
+        String decrypt3des = des.decrypt(encMessage, key3);
+        String encrypt3des = des.encrypt(decrypt3des, key2);
+        String result = des.decrypt(encrypt3des, key);
+
+        decryptedTextField1.setText(result);
     }
 
     private javax.swing.JTextField decryptedTextField1;
